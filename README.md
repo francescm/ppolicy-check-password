@@ -14,11 +14,13 @@ compile it:
 	gcc -shared -o check_password.so check_password.o
 
 Create a openldap directory in the libexec dir where slapd is found, than copy check_password.so:
+
        sudo cp -v check_password.so $PREFIX/libexec/openldap/
 
 Enable the overlay (see instruction at the end)
 
 Create the ppolicy entry:
+
        dn: ou=policies,dc=test,dc=com
        ou: policies
        objectClass: top
@@ -51,20 +53,22 @@ Create the ppolicy entry:
 please note: a ppolicy entry with enforces a pwdCheckModule should display a pwdPolicyChecker objectClass.
 
 Check policies:
+
       sudo ldappasswd -e ppolicy -H ldapi:/// -Y EXTERNAL -s invalidpassword uid=user,ou=people,dc=test,dc=com
-Result: Constraint violation (19)
-control: 1.3.6.1.4.1.42.2.27.8.5.1 false MAOBAQU=
-ppolicy: error=5 (Password fails quality checks)
+      Result: Constraint violation (19)
+      control: 1.3.6.1.4.1.42.2.27.8.5.1 false MAOBAQU=
+      ppolicy: error=5 (Password fails quality checks)
 
 In logs:
-   Sep  4 08:51:26 b1 slapd[25971]: conn=1000 op=1 PASSMOD id="uid=user,ou=people,dc=test,dc=com" new
-   Sep  4 08:51:26 b1 slapd[25971]: check_password_quality: module error: (check_password.so) 2: no digit.[1]
-   Sep  4 08:51:26 b1 slapd[25971]: conn=1000 op=1 RESULT oid= err=19 text=
+
+      Sep  4 08:51:26 b1 slapd[25971]: conn=1000 op=1 PASSMOD id="uid=user,ou=people,dc=test,dc=com" new
+      Sep  4 08:51:26 b1 slapd[25971]: check_password_quality: module error: (check_password.so) 2: no digit.[1]
+         Sep  4 08:51:26 b1 slapd[25971]: conn=1000 op=1 RESULT oid= err=19 text=
 
 Many thanks to:  Andris Eiduks  http://www.openldap.org/lists/openldap-software/200701/msg00382.html
 
 
-Enable ppolicy with dynamic overlays
+# Enable ppolicy with dynamic overlays
 1) add module:
 <pre>
 dn: cn=module{1},cn=config
