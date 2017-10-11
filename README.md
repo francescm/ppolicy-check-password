@@ -6,10 +6,12 @@ Password check modules with ppolicy overlay in openldap-2.4.30
 Be sure your openldap is compiled with the --modules-enabled.
 
 Create a password checker program in: 
-$SOURCE/openldap-2.4.30/servers/slapd/overlays/
+
+      $SOURCE/openldap-2.4.30/servers/slapd/overlays/
 
 compile it:
-#check_password:
+
+        #check_password:
 	gcc -fPIC -c -I../../../include -I.. check_password.c
 	gcc -shared -o check_password.so check_password.o
 
